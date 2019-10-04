@@ -41,8 +41,6 @@ def construct_geo_vector(**kwargs):
     locations = sorted([i[0] for i in session.query(coord_obj.gid).all()])
     geo_name_df = pd.read_sql(session.query(geo_name_obj.name).statement, session.bind)
 
-    obj_results = []
-
     try:
         for loc in locations:
 
@@ -55,12 +53,13 @@ def construct_geo_vector(**kwargs):
             geo_data = geo_data['value'].fillna(0.0)
 
             coord = session.query(coord_obj.lon, coord_obj.lat).filter(coord_obj.gid == loc).first()
-            obj_results.append(geo_vector_obj(gid=loc, data=list(geo_data) + list(coord)))
+            obj_result = geo_vector_obj(gid=loc, data=list(geo_data) + list(coord))
+
+            session.add(obj_result)
+            session.commit()
 
             if loc % 1000 == 0:
                 print('Geo Vector {} has finished.'.format(len(list(geo_data) + list(coord))))
-        session.add_all(obj_results)
-        session.commit()
 
         # adding lon, lat into geo feature names
         obj_results = [geo_name_obj(name='lon', geo_feature='location', feature_type='lon'),
@@ -142,12 +141,12 @@ if __name__ == '__main__':
             'geo_name_obj': SaltLakeCity500mGridGeoName
         },
 
-        {
-            'coord_obj': SaltLakeCity100mGrid,
-            'geo_feature_obj': SaltLakeCity100mGridGeoFeature,
-            'geo_vector_obj': SaltLakeCity100mGridGeoVector,
-            'geo_name_obj': SaltLakeCity100mGridGeoName
-        },
+        # {
+        #     'coord_obj': SaltLakeCity100mGrid,
+        #     'geo_feature_obj': SaltLakeCity100mGridGeoFeature,
+        #     'geo_vector_obj': SaltLakeCity100mGridGeoVector,
+        #     'geo_name_obj': SaltLakeCity100mGridGeoName
+        # },
 
         {
             'coord_obj': SaltLakeCity1000mGrid,

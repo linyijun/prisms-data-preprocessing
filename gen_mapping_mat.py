@@ -95,7 +95,7 @@ def main(coord_obj, args):
     print('Number of cols = {}.'.format(global_n_cols))
 
     np.savez_compressed(
-        os.path.join(args.output_dir, args.output_filename),
+        os.path.join(args.data_dir, args.output_filename),
         mat=mat
     )
 
@@ -103,9 +103,9 @@ def main(coord_obj, args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output_dir', type=str, default='data/', help='output directory')
+    parser.add_argument('--data_dir', type=str, default='data/', help='output directory')
     parser.add_argument('--output_fname', type=str, default='salt_lake_city_500m_grid_mat.npz', help='output filename')
     args = parser.parse_args()
 
-    target_coord_obj = SalkLakeCity500mGrid
+    target_coord_obj = SaltLakeCity500mGrid
     main(target_coord_obj, args)

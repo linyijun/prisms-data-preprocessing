@@ -54,10 +54,10 @@ def gen_meo_vector(meo_obj, time_list, grid_list):
 
     return:
         meo_vector: (n_times, n_loc, n_meo_features)
-        n_meo_features: 8
     """
 
     min_time, max_time = time_list[0], time_list[-1]
+    n_times, n_loc = len(time_list), len(grid_list)
 
     meo_data = session.query(meo_obj.data) \
         .filter(meo_obj.timestamp >= min_time) \
@@ -66,7 +66,7 @@ def gen_meo_vector(meo_obj, time_list, grid_list):
         .order_by(meo_obj.timestamp, meo_obj.gid).all()
 
     n_meo_features = len(meo_data[0][0])
-    meo_vector = np.array(meo_data).reshape(len(time_list), len(grid_list), n_meo_features)
+    meo_vector = np.array(meo_data).reshape((n_times, n_loc, n_meo_features))
 
     print('The shape of meo vector = {}.'.format(meo_vector.shape))
     return meo_vector
@@ -113,7 +113,7 @@ def gen_label_mat(pm_obj, time_list, mapping_mat):
     """
 
     min_time, max_time = time_list[0], time_list[-1]
-    pm_query_sql = session.query(pm_obj) \
+    pm_query_sql = session.query(pm_obj.gid, pm_obj.timestamp, pm_obj.pm) \
         .filter(pm_obj.timestamp >= min_time) \
         .filter(pm_obj.timestamp <= max_time) \
         .order_by(pm_obj.gid)
@@ -123,8 +123,8 @@ def gen_label_mat(pm_obj, time_list, mapping_mat):
     pm_mat_list = []
     for t in time_list:
         this_pm_data = pm_data[pm_data['timestamp'] == t]
-        this_pm_locations = list(this_pm_data['gid'].drop_duplicates())
-        this_pm_data = np.array(this_pm_data['pm']).reshape(1, 1, -1)
+        this_pm_locations = list(this_pm_data['gid'])
+        this_pm_data = np.array(this_pm_data['pm']).reshape((1, 1, -1))
         this_pm_mat = gen_grid_data(this_pm_data, this_pm_locations, mapping_mat)
         pm_mat_list.append(this_pm_mat)
 
@@ -176,7 +176,6 @@ def main(data_obj, args):
     max_time = session.query(func.max(pm_obj.timestamp)).scalar()
     min_time = session.query(func.min(pm_obj.timestamp)).scalar()
     time_list = pd.date_range(start=min_time, end=max_time, freq='1H')
-    times_pd = pd.DataFrame(time_list.tolist(), columns=['timestamp'])
     print('Data from {} to {}.'.format(min_time, max_time))
     print('Number of time points = {}.'.format(len(time_list)))
 
@@ -205,7 +204,7 @@ def main(data_obj, args):
     feature_vector = np.concatenate([feature_vector, arr], axis=-1)
 
     # convert to feature matrix
-    feature_mat = feature_vector.swapaxes(1, 2)
+    feature_mat = feature_vector.swapaxes(1, 2)  # (n_times, n_loc, n_features) => (n_times, n_loc, n_features)
     feature_mat = gen_grid_data(feature_mat, grid_list, mapping_mat)
     print('The shape of feature matrix = {}.'.format(feature_mat.shape))
 
@@ -238,6 +237,14 @@ if __name__ == "__main__":
                 'coord_obj': LosAngeles500mGrid
         },
         ('los_angeles', 1000):
+            {
+                'pm_obj': LosAngeles1000mGridAirQuality201811Trimmed,
+                'meo_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
+                'geo_obj': LosAngeles1000mGridGeoVector,
+                'geo_name_obj': LosAngeles1000mGridGeoName,
+                'coord_obj': LosAngeles1000mGrid
+        },
+        ('utah', 500):
             {
                 'pm_obj': LosAngeles1000mGridAirQuality201811Trimmed,
                 'meo_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
