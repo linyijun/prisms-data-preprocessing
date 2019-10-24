@@ -2,9 +2,8 @@
 This repository includes all the data pre-processing scripts for the project PRISMS.
 
 ### gen_grids.py
-The script is generating a grid map over the target region in Postgres.
-
-__GRID table__: [gid, centroid, lon, lat, geom, lon_proj, lat_proj]
+The script is generating a grid map over the target region in Postgres.  <br />
+Table __GRID__: [gid, centroid, lon, lat, geom, lon_proj, lat_proj]  <br />
 ```
 Input parameters:
 - the bounding box over the target area
@@ -14,9 +13,8 @@ Input parameters:
 ```
 
 ### gen_geo_features.py
-The script is computing the values of various geographic features within each cell from OpenStreetMap. <br />
-
-__GEO_FEATURE table__: [gid, feature_type, geo_feature, value, measurement]
+The script is computing the values of various geographic features within each cell from OpenStreetMap.  <br />
+Table __GEO_FEATURE__: [gid, feature_type, geo_feature, value, measurement] <br />
 ```
 Input parameters:
 - the bounding box over the target area (used for cropping)
@@ -26,9 +24,9 @@ Input parameters:
 ```
 
 ### gen_geo_vector.py
-The script is constructing a geo vector from the geo features. <br />
-__GEO_VECTOR table__: [gid, data] # data is like a list <br />
-__GEO_NAME table__: [name, geo_feature, feature_type]
+The script is constructing a geo vector from the geo features.  <br />
+Table __GEO_VECTOR__: [gid, data] # data is like a list  <br />
+Table __GEO_NAME__: [name, geo_feature, feature_type]  <br />
 ```
 Input parameters:
 - the grid table object
@@ -37,9 +35,21 @@ Input parameters:
 - the geo name table object
 ```
 
+### mapping_mat.py
+The script is mapping the grid to a matrix (re-indexing).  <br />
+E.g., mat = array([[6917, 6918, 6919, ..., 6990, 6991, 6992],  <br />
+                   [6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
+                   [6765, 6766, 6767, ..., 6838, 6839, 6840],  <br />
+                     ... ...,  <br />
+                   [153, 154, 155, ..., 226, 227, 228],  <br />
+                   [77, 78, 79, ..., 150, 151, 152],  <br />
+                   [1, 2, 3, ..., 74, 75, 76]])  <br />
 
-- gen_geo_vector.py  # construct the geo features into vector format, each cell can be represented as a long vector
-------
+```
+Input parameters:
+- the grid table object
+- the output filename # the output would be .npz file
+```
 
 - mapping_mat.py  # map the grid map to a matrix (re-indexing)
 ------
