@@ -39,7 +39,7 @@ Input parameters:
 The script is mapping the grid to a matrix (re-indexing).  <br />
 An example of the output matrix:  <br />
 [[6917, 6918, 6919, ..., 6990, 6991, 6992],  <br />
-[6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
+&nbsp;[6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
 &nbsp;[6765, 6766, 6767, ..., 6838, 6839, 6840],  <br />
 &nbsp;... ...,  <br />
 &nbsp;[153, 154, 155, ..., 226, 227, 228],  <br />
@@ -89,7 +89,7 @@ Input parameters:
 - the meteorological table object
 - the geo vector table object
 - the geo name table object
-- the grid table object & the mapping matrix
+- the grid table object & the mapping matrix file
 - the time range
-- the output filename
+- the output filename  # the output would be .npz file
 ```
