@@ -3,6 +3,7 @@ This repository includes all the data pre-processing scripts for the project PRI
 
 ### gen_grids.py
 The script is generating a grid map over the target region in Postgres.
+
 __GRID table__: [gid, centroid, lon, lat, geom, lon_proj, lat_proj]
 ```
 Input parameters:
@@ -13,7 +14,8 @@ Input parameters:
 ```
 
 ### gen_geo_features.py
-The script is computing the values of various geographic features within each cell from OpenStreetMap.
+The script is computing the values of various geographic features within each cell from OpenStreetMap. <br />
+
 __GEO_FEATURE table__: [gid, feature_type, geo_feature, value, measurement]
 ```
 Input parameters:
@@ -24,8 +26,8 @@ Input parameters:
 ```
 
 ### gen_geo_vector.py
-The script is constructing a geo vector from the geo features.
-__GEO_VECTOR table__: [gid, data] # data is like a list
+The script is constructing a geo vector from the geo features. <br />
+__GEO_VECTOR table__: [gid, data] # data is like a list <br />
 __GEO_NAME table__: [name, geo_feature, feature_type]
 ```
 Input parameters:
