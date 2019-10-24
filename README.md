@@ -1,10 +1,18 @@
 # prisms-data-preprocessing
-This repository includes all the data pre-processing scripts for the project PRISMS
+This repository includes all the data pre-processing scripts for the project PRISMS.
 
-## python3 gen_grids.py
-generate a grid map by given the bounding box, resolution, EPSG
+### gen_grids.py
+The function is generating a grid map over the target region in the Postgres.
+Each cell is represented as ["gid", "centroid", "lon", "lat", "geom", "lon_proj", "lat_proj"].
+You need to provide the following information.
+(1) A bounding box over the target area
+(2) EPSG of the target area
+(3) Required resolution of the grid
 
-- gen_geo_features.py  # compute the value of various geographic features from OpenStreetMap within each cell
+### gen_geo_features.py
+The function is computing the values of various geographic features within each cell from OpenStreetMap.
+
+
 - gen_geo_vector.py  # construct the geo features into vector format, each cell can be represented as a long vector
 - mapping_mat.py  # map the grid map to a matrix (re-indexing)
 - gen_train_val_test_loc.py  # randomly generate training, validation, and testing locations with evenly spatial distribution
