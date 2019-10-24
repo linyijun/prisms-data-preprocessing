@@ -25,7 +25,7 @@ Input parameters:
 
 ### gen_geo_vector.py
 The script is constructing a geo vector from the geo features.  <br />
-Table __GEO_VECTOR__: [gid, data] # data is like a list  <br />
+Table __GEO_VECTOR__: [gid, data]  # data is a list  <br />
 Table __GEO_NAME__: [name, geo_feature, feature_type]  <br />
 ```
 Input parameters:
@@ -37,31 +37,59 @@ Input parameters:
 
 ### mapping_mat.py
 The script is mapping the grid to a matrix (re-indexing).  <br />
-E.g., mat = array([[6917, 6918, 6919, ..., 6990, 6991, 6992],  <br />
-                   [6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
-                   [6765, 6766, 6767, ..., 6838, 6839, 6840],  <br />
-                     ... ...,  <br />
-                   [153, 154, 155, ..., 226, 227, 228],  <br />
-                   [77, 78, 79, ..., 150, 151, 152],  <br />
-                   [1, 2, 3, ..., 74, 75, 76]])  <br />
+An example of the output matrix:
+[[6917, 6918, 6919, ..., 6990, 6991, 6992],  <br />
+&nbsp[6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
+&nbsp[6765, 6766, 6767, ..., 6838, 6839, 6840],  <br />
+&nbsp... ...,  <br />
+&nbsp[153, 154, 155, ..., 226, 227, 228],  <br />
+&nbsp[77, 78, 79, ..., 150, 151, 152],  <br />
+&nbsp[1, 2, 3, ..., 74, 75, 76]])  <br />
 
 ```
 Input parameters:
 - the grid table object
-- the output filename # the output would be .npz file
+- the output filename  # the output would be .npz file
 ```
 
-- mapping_mat.py  # map the grid map to a matrix (re-indexing)
-------
+### gen_train_val_test_loc.py
+The script is randomly generating training, validation, and testing locations with evenly-spatial distribution.  <br />
+```
+Input parameters:
+- the given locations
+- the cluster number  # extracting locations from each cluster to ensure even distribution
+```
 
-- gen_train_val_test_loc.py  # randomly generate training, validation, and testing locations with evenly spatial distribution
-------
+### temporal_interpolation.py
+The script is interpolate the features (meteorological) across the time using linear interpolation.  <br />
+Table __INTERPOLATE__: [gid, timestamp, data]  <br />
+```
+Input parameters:
+- the old meteorological table object
+- the target meteorological table object  # have the same spatial resolution as the old one
+```
 
-- spatial_interpolation.py  # interpolate the features over the space using cubic interpolation
-------
+### spatial_interpolation.py
+The script is interpolate the features (meteorological) across the space using cubic interpolation.  <br />
+Table __INTERPOLATE__: [gid, timestamp, data]  <br />
+```
+Input parameters:
+- the old grid table object
+- the old meteorological table object
+- the target grid table object
+- the target meteorological table object  # having finer spatial resolution than the old one
+```
 
-- temporal_interpolation.py  # interpolate the feature over the time using linear interpolation
-------
-
-= gen_training_data  # generate the training data including
-------
+### gen_training_data.py
+The script is generating the training data including label matrix and feature matrix.  <br />
+The output file describes "label_mat", "feature_mat", "feature_distribution", "geo_name", "pm_grids", "grids".  <br />
+```
+Input parameters:
+- the air quality table object
+- the meteorological table object
+- the geo vector table object
+- the geo name table object
+- the grid table object & the mapping matrix
+- the time range
+- the output filename
+```
