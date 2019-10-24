@@ -10,11 +10,11 @@ Input parameters:
 - the resolution of the grid
 - the grid table object
 
-Output: a grid table **[gid, centroid, lon, lat, geom, lon_proj, lat_proj]**
+Output:
+a grid table __[gid, centroid, lon, lat, geom, lon_proj, lat_proj]__
 ```
 
 ### gen_geo_features.py
-------
 The script is computing the values of various geographic features within each cell from OpenStreetMap.
 ```
 Input parameters:
@@ -23,9 +23,23 @@ Input parameters:
 - the grid table object
 - the geo feature table object
 
-Output: a geo feature table **[gid, feature_type, geo_feature, value, measurement]**
+Output:
+a geo feature table __[gid, feature_type, geo_feature, value, measurement]__
 ```
-------
+
+### gen_geo_vector.py
+The script is constructing a vector from the geo features
+```
+Input parameters:
+- the grid table object
+- the geo feature table object
+- the geo vector table object
+- the geo name table object
+
+Output:
+a geo vector table __[gid, data]__
+a geo name table __[name, geo_feature, feature_type]__
+```
 
 
 - gen_geo_vector.py  # construct the geo features into vector format, each cell can be represented as a long vector
