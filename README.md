@@ -37,14 +37,14 @@ Input parameters:
 
 ### mapping_mat.py
 The script is mapping the grid to a matrix (re-indexing).  <br />
-An example of the output matrix:
+An example of the output matrix:  <br />
 [[6917, 6918, 6919, ..., 6990, 6991, 6992],  <br />
-&nbsp[6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
-&nbsp[6765, 6766, 6767, ..., 6838, 6839, 6840],  <br />
-&nbsp... ...,  <br />
-&nbsp[153, 154, 155, ..., 226, 227, 228],  <br />
-&nbsp[77, 78, 79, ..., 150, 151, 152],  <br />
-&nbsp[1, 2, 3, ..., 74, 75, 76]])  <br />
+[6841, 6842, 6843, ..., 6914, 6915, 6916],  <br />
+&nbsp;[6765, 6766, 6767, ..., 6838, 6839, 6840],  <br />
+&nbsp;... ...,  <br />
+&nbsp;[153, 154, 155, ..., 226, 227, 228],  <br />
+&nbsp;[77, 78, 79, ..., 150, 151, 152],  <br />
+&nbsp;[1, 2, 3, ..., 74, 75, 76]])  <br />
 
 ```
 Input parameters:
@@ -62,27 +62,27 @@ Input parameters:
 
 ### temporal_interpolation.py
 The script is interpolate the features (meteorological) across the time using linear interpolation.  <br />
-Table __INTERPOLATE__: [gid, timestamp, data]  <br />
+Table __INTERPOLATION__: [gid, timestamp, data]  <br />
 ```
 Input parameters:
 - the old meteorological table object
-- the target meteorological table object  # have the same spatial resolution as the old one
+- the target meteorological table object  # having the same spatial resolution as the old one
 ```
 
 ### spatial_interpolation.py
 The script is interpolate the features (meteorological) across the space using cubic interpolation.  <br />
-Table __INTERPOLATE__: [gid, timestamp, data]  <br />
+Table __INTERPOLATION__: [gid, timestamp, data]  <br />
 ```
 Input parameters:
 - the old grid table object
 - the old meteorological table object
 - the target grid table object
-- the target meteorological table object  # having finer spatial resolution than the old one
+- the target meteorological table object  # having a finer spatial resolution than the old one
 ```
 
 ### gen_training_data.py
 The script is generating the training data including label matrix and feature matrix.  <br />
-The output file describes "label_mat", "feature_mat", "feature_distribution", "geo_name", "pm_grids", "grids".  <br />
+The output file has information of "label_mat", "feature_mat", "feature_distribution", "geo_name", "pm_grids", "grids".  <br />
 ```
 Input parameters:
 - the air quality table object
