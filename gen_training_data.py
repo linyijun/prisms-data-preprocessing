@@ -1,4 +1,5 @@
 import argparse
+import pytz
 from sqlalchemy import func
 import pandas as pd
 import numpy as np
@@ -104,7 +105,7 @@ def gen_time_vector(time_list, grid_list):
     return time_vector
 
 
-def gen_label_mat(pm_obj, time_list, mapping_mat):
+def gen_label_mat(pm_obj, loc_list, time_list, mapping_mat):
     """
     construct the label matrix, if there is no label for a grid, using Nan to fill in.
 
@@ -113,7 +114,8 @@ def gen_label_mat(pm_obj, time_list, mapping_mat):
     """
 
     min_time, max_time = time_list[0], time_list[-1]
-    pm_query_sql = session.query(pm_obj.gid, pm_obj.timestamp, pm_obj.pm) \
+    pm_query_sql = session.query(pm_obj.gid, pm_obj.timestamp, pm_obj.pm25) \
+        .filter(pm_obj.gid.in_(loc_list)) \
         .filter(pm_obj.timestamp >= min_time) \
         .filter(pm_obj.timestamp <= max_time) \
         .order_by(pm_obj.gid)
@@ -124,7 +126,7 @@ def gen_label_mat(pm_obj, time_list, mapping_mat):
     for t in time_list:
         this_pm_data = pm_data[pm_data['timestamp'] == t]
         this_pm_locations = list(this_pm_data['gid'])
-        this_pm_data = np.array(this_pm_data['pm']).reshape((1, 1, -1))
+        this_pm_data = np.array(this_pm_data['pm25']).reshape((1, 1, -1))
         this_pm_mat = gen_grid_data(this_pm_data, this_pm_locations, mapping_mat)
         pm_mat_list.append(this_pm_mat)
 
@@ -173,11 +175,23 @@ def main(data_obj, args):
     coord_obj = data_obj['coord_obj']
 
     # get time range of the target
-    max_time = session.query(func.max(pm_obj.timestamp)).scalar()
-    min_time = session.query(func.min(pm_obj.timestamp)).scalar()
-    time_list = pd.date_range(start=min_time, end=max_time, freq='1H')
+    # max_time = session.query(func.max(pm_obj.timestamp)).scalar()
+    # min_time = session.query(func.min(pm_obj.timestamp)).scalar()
+
+    min_time, max_time = args.min_time, args.max_time
+    tz = pytz.timezone('America/Los_Angeles')
+    time_list = pd.date_range(start=min_time, end=max_time, closed='left', freq='1H')
+    time_list = [tz.localize(x) for x in time_list]
     print('Data from {} to {}.'.format(min_time, max_time))
     print('Number of time points = {}.'.format(len(time_list)))
+
+    # get all the pm locations
+    pm_locations = session.query(pm_obj.gid) \
+        .filter(pm_obj.timestamp >= min_time) \
+        .filter(pm_obj.timestamp <= max_time) \
+        .group_by(pm_obj.gid).having(func.count(pm_obj.gid) > 0.01 * len(time_list)).all()
+    pm_locations = sorted([loc[0] for loc in pm_locations])
+    print('Number of pm2.5 locations = {}.'.format(len(pm_locations)))
 
     # get all grid locations
     coord_df = pd.read_sql(session.query(coord_obj.gid, coord_obj.lon, coord_obj.lat).statement, session.bind)
@@ -188,7 +202,7 @@ def main(data_obj, args):
     mapping_mat = np.load(os.path.join(args.data_dir, args.mapping_mat))['mat']
 
     print("...Generating label data...")
-    label_mat = gen_label_mat(pm_obj, time_list, mapping_mat)
+    label_mat = gen_label_mat(pm_obj, pm_locations, time_list, mapping_mat)
 
     print("...Generating dynamic data...")
     meo_vector = gen_meo_vector(meo_obj, time_list, grid_list)
@@ -213,46 +227,50 @@ def main(data_obj, args):
         label_mat=label_mat,
         feature_mat=feature_mat,
         feature_distribution=np.array([meo_vector.shape[-1], time_vector.shape[-1], geo_vector.shape[-1]]),
-        geo_name=np.array(geo_name_list)
+        geo_name=np.array(geo_name_list),
+        pm_grids=np.array(pm_locations),
+        grids=np.array(grid_list)
     )
 
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', type=str, default='data/', help='data directory')
-    parser.add_argument('--mapping_mat', type=str, default='los_angeles_500m_grid_mat.npz', help='')
-    parser.add_argument('--output_filename', type=str, default='los_angeles_500m_data.npz', help='output filename')
-
-    args = parser.parse_args()
-
     # data definition
     data_obj = {
         ('los_angeles', 500):
             {
-                'pm_obj': LosAngeles500mGridAirQuality201811Trimmed,
-                'meo_obj': LosAngeles500mGridMeoDarkSkyInterpolate201811,
+                'pm_obj': LosAngeles500mGridPurpleAirPM2018Trimmed,
                 'geo_obj': LosAngeles500mGridGeoVector,
                 'geo_name_obj': LosAngeles500mGridGeoName,
                 'coord_obj': LosAngeles500mGrid
-        },
+            },
         ('los_angeles', 1000):
             {
-                'pm_obj': LosAngeles1000mGridAirQuality201811Trimmed,
-                'meo_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
+                'pm_obj': LosAngeles1000mGridPurpleAirPM2018Trimmed,
                 'geo_obj': LosAngeles1000mGridGeoVector,
                 'geo_name_obj': LosAngeles1000mGridGeoName,
                 'coord_obj': LosAngeles1000mGrid
-        },
-        ('utah', 500):
-            {
-                'pm_obj': LosAngeles1000mGridAirQuality201811Trimmed,
-                'meo_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
-                'geo_obj': LosAngeles1000mGridGeoVector,
-                'geo_name_obj': LosAngeles1000mGridGeoName,
-                'coord_obj': LosAngeles1000mGrid
-        }
+            },
+        # ('utah', 500):
+        #     {
+        #         'pm_obj': LosAngeles1000mGridAirQuality201811Trimmed,
+        #         'meo_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
+        #         'geo_obj': LosAngeles1000mGridGeoVector,
+        #         'geo_name_obj': LosAngeles1000mGridGeoName,
+        #         'coord_obj': LosAngeles1000mGrid
+        # }
     }
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_dir', type=str, default='data/', help='data directory')
+    parser.add_argument('--mapping_mat', type=str, default='los_angeles_500m_grid_mat.npz')
+    parser.add_argument('--output_filename', type=str, default='los_angeles_500m_data_201802.npz')
+    parser.add_argument('--meo_obj', type=object, default=LosAngeles500mGridMeoDarkSkyInterpolate201802)
+    parser.add_argument('--min_time', type=str, default='2018-02-01', help='minimum timestamp')
+    parser.add_argument('--max_time', type=str, default='2018-03-01', help='maximum timestamp')
+
+    args = parser.parse_args()
+
     target_data_obj = data_obj[('los_angeles', 500)]
+    target_data_obj['meo_obj'] = args.meo_obj
     main(target_data_obj, args)

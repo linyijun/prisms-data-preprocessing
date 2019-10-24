@@ -10,7 +10,7 @@ from data_models.meo_model import *
 from utils import create_table, check_status
 
 
-def spatial_interpolate(**kwargs):
+def interpolate_space(**kwargs):
 
     inter_method = 'cubic'
     old_obj = kwargs['old_obj']
@@ -26,6 +26,7 @@ def spatial_interpolate(**kwargs):
 
         target_coord = session.query(target_coord_obj).order_by(target_coord_obj.gid).subquery()
 
+        # if given the locations, only interpolate for target locations
         if len(locations):
             target_coord = session.query(target_coord).filter(target_coord.c.gid.in_(locations)).subquery()
 
@@ -54,8 +55,10 @@ def spatial_interpolate(**kwargs):
 
 def main(**kwargs):
 
-    # meo_features = ['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed', 'wind_bearing',
-    #                 'cloud_cover', 'visibility']
+    """
+         meo_features = ['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed', 'wind_bearing',
+                         'cloud_cover', 'visibility']
+    """
 
     if kwargs['if_all_grids_meo']:
 
@@ -74,7 +77,7 @@ def main(**kwargs):
 
     status = create_table(kwargs['target_obj'])
     check_status(status)
-    status = spatial_interpolate(**kwargs)
+    status = interpolate_space(**kwargs)
     check_status(status)
 
 
@@ -83,17 +86,17 @@ if __name__ == '__main__':
     settings = [
 
         {
-            'old_obj': LosAngeles5000mGridMeoDarkSkyInterpolate201811,
+            'old_obj': LosAngeles5000mGridMeoDarkSkyInterpolate201801,
             'old_coord_obj': LosAngeles5000mGrid,
-            'target_obj': LosAngeles500mGridMeoDarkSkyInterpolate201811,
+            'target_obj': LosAngeles500mGridMeoDarkSkyInterpolate201801,
             'target_coord_obj': LosAngeles500mGrid,
             'if_all_grids_meo': True
         },
 
         {
-            'old_obj': LosAngeles5000mGridMeoDarkSkyInterpolate201811,
+            'old_obj': LosAngeles5000mGridMeoDarkSkyInterpolate201801,
             'old_coord_obj': LosAngeles5000mGrid,
-            'target_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
+            'target_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201801,
             'target_coord_obj': LosAngeles1000mGrid,
             'if_all_grids_meo': True
         }

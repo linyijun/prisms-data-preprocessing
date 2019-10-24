@@ -16,10 +16,6 @@ class GridTemplate(object):
     lat_proj = Column(Float(53), nullable=False)
 
 
-class LosAngeles100mGrid(GridTemplate, Base):
-    __tablename__ = 'los_angeles_100m_grid'
-
-
 class LosAngeles500mGrid(GridTemplate, Base):
     __tablename__ = 'los_angeles_500m_grid'
 
@@ -30,10 +26,6 @@ class LosAngeles1000mGrid(GridTemplate, Base):
 
 class LosAngeles5000mGrid(GridTemplate, Base):
     __tablename__ = 'los_angeles_5000m_grid'
-
-
-class SaltLakeCity100mGrid(GridTemplate, Base):
-    __tablename__ = 'salt_lake_city_100m_grid'
 
 
 class SaltLakeCity500mGrid(GridTemplate, Base):

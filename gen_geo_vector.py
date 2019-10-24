@@ -13,6 +13,11 @@ CONFIG = {
         "landuse_a",
         "natural",
         "natural_a",
+        "places",
+        "places_a",
+        "pofw",
+        "pofw_a"
+        "pois"
         "pois_a",
         "railways",
         "roads",
@@ -119,14 +124,7 @@ if __name__ == '__main__':
         #     'geo_vector_obj': LosAngeles500mGridGeoVector,
         #     'geo_name_obj': LosAngeles500mGridGeoName
         # },
-        #
-        # {
-        #     'coord_obj': LosAngeles100mGrid,
-        #     'geo_feature_obj': LosAngeles100mGridGeoFeature,
-        #     'geo_vector_obj': LosAngeles100mGridGeoVector,
-        #     'geo_name_obj': LosAngeles100mGridGeoName
-        # },
-        #
+
         # {
         #     'coord_obj': LosAngeles1000mGrid,
         #     'geo_feature_obj': LosAngeles1000mGridGeoFeature,
@@ -140,14 +138,6 @@ if __name__ == '__main__':
             'geo_vector_obj': SaltLakeCity500mGridGeoVector,
             'geo_name_obj': SaltLakeCity500mGridGeoName
         },
-
-        # {
-        #     'coord_obj': SaltLakeCity100mGrid,
-        #     'geo_feature_obj': SaltLakeCity100mGridGeoFeature,
-        #     'geo_vector_obj': SaltLakeCity100mGridGeoVector,
-        #     'geo_name_obj': SaltLakeCity100mGridGeoName
-        # },
-
         {
             'coord_obj': SaltLakeCity1000mGrid,
             'geo_feature_obj': SaltLakeCity1000mGridGeoFeature,

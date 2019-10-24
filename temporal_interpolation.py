@@ -6,10 +6,7 @@ from data_models.meo_model import *
 from utils import create_table, check_status
 
 
-
-
-
-def temporal_interpolate(old_obj, target_obj, times, features):
+def interpolate_time(old_obj, target_obj, times, features):
 
     try:
         locations = session.query(old_obj.gid).distinct(old_obj.gid).all()
@@ -38,10 +35,8 @@ def temporal_interpolate(old_obj, target_obj, times, features):
         return {'status': 0, 'msg': e}
 
 
-def main():
+def main(old_meo_obj, target_meo_obj):
 
-    old_meo_obj = LosAngeles5000mGridMeoDarkSky201811
-    target_meo_obj = LosAngeles5000mGridMeoDarkSkyInterpolate201811
     meo_features = ['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed', 'wind_bearing',
                     'cloud_cover', 'visibility']
 
@@ -52,9 +47,12 @@ def main():
     # one time execution
     status = create_table(target_meo_obj)
     check_status(status)
-    status = temporal_interpolate(old_meo_obj, target_meo_obj, times, meo_features)
+    status = interpolate_time(old_meo_obj, target_meo_obj, times, meo_features)
     check_status(status)
 
 
 if __name__ == '__main__':
-    main()
+
+    old_meo = LosAngeles5000mGridMeoDarkSky201802
+    target_meo = LosAngeles5000mGridMeoDarkSkyInterpolate201802
+    main(old_meo, target_meo)

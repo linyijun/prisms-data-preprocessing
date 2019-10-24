@@ -9,8 +9,8 @@ class DarkSkyTemplate(object):
     __table_args__ = {'schema': 'auxiliary_data'}
 
     uid = Column(BigInteger, primary_key=True, autoincrement=True)
-    gid = Column(Integer, nullable=False)
-    timestamp = Column(DateTime(timezone=True), nullable=False)
+    gid = Column(Integer, nullable=False, index=True)
+    timestamp = Column(DateTime(timezone=True), nullable=False, index=True)
     summary = Column(Text)
     icon = Column(Text)
     precip_intensity = Column(REAL)
@@ -26,6 +26,14 @@ class DarkSkyTemplate(object):
     uv_index = Column(REAL)
     visibility = Column(REAL)
     ozone = Column(REAL)
+
+
+class LosAngeles5000mGridMeoDarkSky201801(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201801'
+
+
+class LosAngeles5000mGridMeoDarkSky201802(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201802'
 
 
 class LosAngeles5000mGridMeoDarkSky201811(DarkSkyTemplate, Base):
@@ -49,16 +57,49 @@ class DarkSkyInterpolateTemplate(object):
     data = Column(ARRAY(REAL), nullable=False)
 
 
+class LosAngeles500mGridMeoDarkSkyInterpolate201801(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201801'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201802(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201802'
+
+
 class LosAngeles500mGridMeoDarkSkyInterpolate201811(DarkSkyInterpolateTemplate, Base):
     __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201811'
+
+
+# -------------------------------------------------------------------------------------- #
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201801(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201801'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201802(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201802'
 
 
 class LosAngeles1000mGridMeoDarkSkyInterpolate201811(DarkSkyInterpolateTemplate, Base):
     __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201811'
 
 
+# -------------------------------------------------------------------------------------- #
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201801(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201801'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201802(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201802'
+
+
 class LosAngeles5000mGridMeoDarkSkyInterpolate201811(DarkSkyInterpolateTemplate, Base):
     __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201811'
+
+
+# -------------------------------------------------------------------------------------- #
 
 
 class SaltLakeCity500mGridMeoDarkSkyInterpolate201703201803(DarkSkyInterpolateTemplate, Base):
@@ -75,6 +116,5 @@ class SaltLakeCity5000mGridMeoDarkSkyInterpolate201703201803(DarkSkyInterpolateT
     __table_args__ = {'schema': 'preprocess2'}
     __tablename__ = 'salt_lake_city_5000m_grid_meo_darksky_interpolate_201703_201803'
 
-# --------------------------------------------------------------------------------------------------------------- #
 
 
