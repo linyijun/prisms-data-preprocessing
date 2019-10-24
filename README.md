@@ -2,20 +2,29 @@
 This repository includes all the data pre-processing scripts for the project PRISMS.
 
 ### gen_grids.py
-The script is generating a grid map over the target region in Postgres.
-The grid table consists of generated cells, which are represented as ["gid", "centroid", "lon", "lat", "geom", "lon_proj", "lat_proj"].
-```
-Params:
-- A bounding box over the target area
-- EPSG of the target area
-- Required resolution of the grid
-- The grid table object in the database
-```
 ------
+The script is generating a grid map over the target region in Postgres.
+```
+Input parameters:
+- the bounding box over the target area
+- the EPSG of the target area (unit should be "metre")
+- the resolution of the grid
+- the grid table object
 
+Generating a grid table with cells as [gid, centroid, lon, lat, geom, lon_proj, lat_proj].
+```
 
 ### gen_geo_features.py
-The function is computing the values of various geographic features within each cell from OpenStreetMap.
+------
+The script is computing the values of various geographic features within each cell from OpenStreetMap.
+The geo feature table: [gid, feature_type, geo_feature, value, measurement]
+```
+Input parameters:
+- the bounding box over the target area (used for cropping)
+- the OpenStreetMap table objects and corresponding geo features (e.g., landuses, roads)
+- the grid table object
+- the geo feature table object
+```
 ------
 
 

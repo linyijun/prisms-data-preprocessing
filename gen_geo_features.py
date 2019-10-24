@@ -124,16 +124,13 @@ if __name__ == '__main__':
         },
         "BOUNDING_BOX": 'POLYGON((-118.5246 33.7322, -118.5246 34.1455, -118.1158 34.1455, -118.1158 33.7322, '
                         '-118.5246 33.7322))',
-        "EPSG": 6423,
         500: {
             "GRID_OBJ": LosAngeles500mGrid,
             "GEO_FEATURE_OBJ": LosAngeles500mGridGeoFeature,
-            "RESOLUTION": 500,
         },
         1000: {
             "GRID_OBJ": LosAngeles1000mGrid,
             "GEO_FEATURE_OBJ": LosAngeles1000mGridGeoFeature,
-            "RESOLUTION": 1000,
         }
     }
 
@@ -142,7 +139,6 @@ if __name__ == '__main__':
     conf = target[res]
     conf['OSM'] = target['OSM']
     conf['BOUNDING_BOX'] = target['BOUNDING_BOX']
-    conf['EPSG'] = target['EPSG']
 
     status = create_geo_feature_table(conf)
     check_status(status)
