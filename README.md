@@ -3,7 +3,7 @@ This repository includes all the data pre-processing scripts for the project PRI
 
 ### gen_grids.py
 The script is generating a grid map over the target region in Postgres.
-__grid table__: [gid, centroid, lon, lat, geom, lon_proj, lat_proj]
+__GRID TABLE__: [gid, centroid, lon, lat, geom, lon_proj, lat_proj]
 ```
 Input parameters:
 - the bounding box over the target area
