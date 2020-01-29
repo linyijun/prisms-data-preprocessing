@@ -57,7 +57,7 @@ The script is randomly generating training, validation, and testing locations wi
 ```
 Input parameters:
 - the given locations
-- the cluster number  # extracting locations from each cluster to ensure even distribution
+- the number of pieces dividing the space or the number of clusterst  # extracting locations from each cluster to ensure even distribution
 ```
 
 ### temporal_interpolation.py
@@ -80,9 +80,9 @@ Input parameters:
 - the target meteorological table object  # having a finer spatial resolution than the old one
 ```
 
-### gen_training_data.py
+### main.py
 The script is generating the training data including label matrix and feature matrix.  <br />
-The output file has information of "label_mat", "feature_mat", "feature_distribution", "geo_name", "pm_grids", "grids".  <br />
+The output file contains "label_mat", "feature_mat", "feature_distribution", "geo_name", "pm_grids", "grids".  <br />
 ```
 Input parameters:
 - the air quality table object

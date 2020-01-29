@@ -4,10 +4,10 @@ import pandas as pd
 from data_models.common_db import session
 from data_models.geo_feature_model import *
 from data_models.grid_model import *
-from utils import create_table, check_status
+from utils import create_table
 
 
-CONFIG = {
+DEFAULT = {
 
     "geo_features": [
         "landuse_a",
@@ -69,13 +69,14 @@ def construct_geo_vector(**kwargs):
         # adding lon, lat into geo feature names
         obj_results = [geo_name_obj(name='lon', geo_feature='location', feature_type='lon'),
                        geo_name_obj(name='lat', geo_feature='location', feature_type='lat')]
-        session.add_all(obj_results)
-        session.commit()
+        # session.add_all(obj_results)
+        # session.commit()
 
-        return {'status': 1, 'msg': ''}
+        return
 
     except Exception as e:
-        return {'status': 0, 'msg': e}
+        print(e)
+        exit(-1)
 
 
 def construct_geo_name(geo_feature_obj, geo_name_obj):
@@ -84,39 +85,37 @@ def construct_geo_name(geo_feature_obj, geo_name_obj):
         #  filter geographic data by features and feature types
 
         geo_data = session.query(geo_feature_obj) \
-            .filter(geo_feature_obj.geo_feature.in_(CONFIG['geo_features'])) \
-            .filter(~geo_feature_obj.feature_type.in_(CONFIG['exempt_types'])).subquery()
+            .filter(geo_feature_obj.geo_feature.in_(DEFAULT['geo_features'])) \
+            .filter(~geo_feature_obj.feature_type.in_(DEFAULT['exempt_types'])).subquery()
 
         geo_name = session.query(func.concat(geo_data.c.geo_feature, '_', geo_data.c.feature_type).label('name'),
                                  geo_data.c.geo_feature, geo_data.c.feature_type).distinct().order_by('name').all()
 
         obj_results = [geo_name_obj(name=item[0], geo_feature=item[1], feature_type=item[2]) for item in geo_name]
-        session.add_all(obj_results)
-        session.commit()
+        # session.add_all(obj_results)
+        # session.commit()
 
         print('Generated {} Geo Names.'.format(len(geo_name)))
-        return {'status': 1, 'msg': ''}
+        return
 
     except Exception as e:
-        return {'status': 0, 'msg': e}
+        print(e)
+        exit(-1)
 
 
 def main(**kwargs):
 
-    status = create_table(kwargs['geo_name_obj'])
-    check_status(status)
-    status = construct_geo_name(kwargs['geo_feature_obj'], kwargs['geo_name_obj'])
-    check_status(status)
+    """ !!! Be careful, create table would overwrite the original table """
+    # create_table(kwargs['geo_name_obj'])
+    construct_geo_name(kwargs['geo_feature_obj'], kwargs['geo_name_obj'])
 
-    status = create_table(kwargs['geo_vector_obj'])
-    check_status(status)
-    status = construct_geo_vector(**kwargs)
-    check_status(status)
+    # create_table(kwargs['geo_vector_obj'])
+    construct_geo_vector(**kwargs)
 
 
 if __name__ == '__main__':
 
-    settings = [
+    configs = [
 
         # {
         #     'coord_obj': LosAngeles500mGrid,
@@ -146,5 +145,5 @@ if __name__ == '__main__':
         }
     ]
 
-    for setting in settings:
-        main(**setting)
+    for conf in configs:
+        main(**conf)

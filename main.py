@@ -18,8 +18,7 @@ def gen_geo_vector(geo_obj, geo_name_obj, grid_list):
 
     return:
         geo_vector: (n_loc, n_geo_features)
-        trimmed_geo_name_list: a list of trimmed geographic feature names
-        n_trimmed_geo_features
+        geo_name_list: a list of geographic feature names
     """
 
     geo_data = session.query(geo_obj.data) \
@@ -35,16 +34,6 @@ def gen_geo_vector(geo_obj, geo_name_obj, grid_list):
 
     if len(geo_name_list) != n_geo_features:
         print('Something wrong with the geographic feature vector!')
-
-    # # remove the features that too few locations have them
-    # trimmed_mask = np.count_nonzero(geo_vector, axis=0) > 0.01 * len(grid_list)
-    # trimmed_geo_vector = geo_vector[:, trimmed_mask]
-    #
-    # trimmed_geo_name_list = [name for i, name in enumerate(geo_name_list) if trimmed_mask[i]]
-    # n_trimmed_geo_features = trimmed_geo_vector.shape[-1]
-    # print('The shape of trimmed geo vector = {}.'.format(trimmed_geo_vector.shape))
-    # print('Number of trimmed geo features = {}.'.format(n_trimmed_geo_features))
-    # return trimmed_geo_vector, trimmed_geo_name_list
 
     return geo_vector, geo_name_list
 
@@ -105,7 +94,7 @@ def gen_time_vector(time_list, grid_list):
     return time_vector
 
 
-def gen_label_mat(pm_obj, loc_list, time_list, mapping_mat):
+def gen_label_mat(pm_obj, time_list, mapping_mat):
     """
     construct the label matrix, if there is no label for a grid, using Nan to fill in.
 
@@ -115,7 +104,6 @@ def gen_label_mat(pm_obj, loc_list, time_list, mapping_mat):
 
     min_time, max_time = time_list[0], time_list[-1]
     pm_query_sql = session.query(pm_obj.gid, pm_obj.timestamp, pm_obj.pm25) \
-        .filter(pm_obj.gid.in_(loc_list)) \
         .filter(pm_obj.timestamp >= min_time) \
         .filter(pm_obj.timestamp <= max_time) \
         .order_by(pm_obj.gid)
@@ -125,9 +113,9 @@ def gen_label_mat(pm_obj, loc_list, time_list, mapping_mat):
     pm_mat_list = []
     for t in time_list:
         this_pm_data = pm_data[pm_data['timestamp'] == t]
-        this_pm_locations = list(this_pm_data['gid'])
+        this_pm_grids = list(this_pm_data['gid'])
         this_pm_data = np.array(this_pm_data['pm25']).reshape((1, 1, -1))
-        this_pm_mat = gen_grid_data(this_pm_data, this_pm_locations, mapping_mat)
+        this_pm_mat = gen_grid_data(this_pm_data, this_pm_grids, mapping_mat)
         pm_mat_list.append(this_pm_mat)
 
     pm_mat = np.vstack(pm_mat_list)
@@ -166,48 +154,41 @@ def gen_grid_data(ori_data, loc_list, mapping_mat):
     return tar_data
 
 
-def main(data_obj, args):
+def main(input_obj):
 
-    pm_obj = data_obj['pm_obj']
-    meo_obj = data_obj['meo_obj']
-    geo_obj = data_obj['geo_obj']
-    geo_name_obj = data_obj['geo_name_obj']
-    coord_obj = data_obj['coord_obj']
+    pm_obj = input_obj['pm_obj']
+    meo_obj = input_obj['meo_obj']
+    geo_obj = input_obj['geo_obj']
+    geo_name_obj = input_obj['geo_name_obj']
+    coord_obj = input_obj['coord_obj']
+    mapping_mat_file = input_obj['mapping_mat']
 
-    # get time range of the target
-    # max_time = session.query(func.max(pm_obj.timestamp)).scalar()
-    # min_time = session.query(func.min(pm_obj.timestamp)).scalar()
+    # load mapping matrix
+    mapping_mat = np.load(mapping_mat_file)['mat']
 
-    min_time, max_time = args.min_time, args.max_time
-    tz = pytz.timezone('America/Los_Angeles')
-    time_list = pd.date_range(start=min_time, end=max_time, closed='left', freq='1H')
-    time_list = [tz.localize(x) for x in time_list]
-    print('Data from {} to {}.'.format(min_time, max_time))
-    print('Number of time points = {}.'.format(len(time_list)))
-
-    # get all the pm locations
-    pm_locations = session.query(pm_obj.gid) \
-        .filter(pm_obj.timestamp >= min_time) \
-        .filter(pm_obj.timestamp <= max_time) \
-        .group_by(pm_obj.gid).having(func.count(pm_obj.gid) > 0.01 * len(time_list)).all()
-    pm_locations = sorted([loc[0] for loc in pm_locations])
-    print('Number of pm2.5 locations = {}.'.format(len(pm_locations)))
-
-    # get all grid locations
+    # load grids
     coord_df = pd.read_sql(session.query(coord_obj.gid, coord_obj.lon, coord_obj.lat).statement, session.bind)
     grid_list = list(coord_df['gid'])
     print('Number of grids = {}.'.format(len(grid_list)))
 
-    # load mapping matrix
-    mapping_mat = np.load(os.path.join(args.data_dir, args.mapping_mat))['mat']
+    # get time list
+    min_time, max_time = input_obj['min_time'], input_obj['max_time']
+    tz = pytz.timezone('America/Los_Angeles')
+    time_list = pd.date_range(start=min_time, end=max_time, closed='left', freq='1H')
+    time_list = sorted(list(set([tz.localize(x) for x in time_list])))
+    print('Data from {} to {}.'.format(min_time, max_time))
+    print('Number of time points = {}.'.format(len(time_list)))
 
+    # generate label data
     print("...Generating label data...")
-    label_mat = gen_label_mat(pm_obj, pm_locations, time_list, mapping_mat)
+    label_mat = gen_label_mat(pm_obj, time_list, mapping_mat)
 
+    # generate dynamic data
     print("...Generating dynamic data...")
     meo_vector = gen_meo_vector(meo_obj, time_list, grid_list)
     time_vector = gen_time_vector(time_list, grid_list)
 
+    # generate static data
     print("...Generating static data...")
     geo_vector, geo_name_list = gen_geo_vector(geo_obj, geo_name_obj, grid_list)
 
@@ -217,18 +198,18 @@ def main(data_obj, args):
     arr = np.repeat(arr, len(time_list), axis=0)
     feature_vector = np.concatenate([feature_vector, arr], axis=-1)
 
-    # convert to feature matrix
-    feature_mat = feature_vector.swapaxes(1, 2)  # (n_times, n_loc, n_features) => (n_times, n_loc, n_features)
+    # # convert to feature matrix
+    feature_mat = feature_vector.swapaxes(1, 2)  # (n_times, n_loc, n_features) => (n_times, n_features, n_loc)
     feature_mat = gen_grid_data(feature_mat, grid_list, mapping_mat)
     print('The shape of feature matrix = {}.'.format(feature_mat.shape))
 
     np.savez_compressed(
-        os.path.join(args.data_dir, args.output_filename),
+        os.path.join(input_obj['output_filename']),
         label_mat=label_mat,
         feature_mat=feature_mat,
-        feature_distribution=np.array([meo_vector.shape[-1], time_vector.shape[-1], geo_vector.shape[-1]]),
-        geo_name=np.array(geo_name_list),
-        pm_grids=np.array(pm_locations),
+        dynamic_features=np.array(['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed',
+                                   'wind_direction', 'cloud_cover', 'visibility', 'hourofday', 'dayofweek', 'day']),
+        static_features=np.array(geo_name_list),
         grids=np.array(grid_list)
     )
 
@@ -237,40 +218,57 @@ if __name__ == "__main__":
 
     # data definition
     data_obj = {
-        ('los_angeles', 500):
-            {
-                'pm_obj': LosAngeles500mGridPurpleAirPM2018Trimmed,
-                'geo_obj': LosAngeles500mGridGeoVector,
-                'geo_name_obj': LosAngeles500mGridGeoName,
-                'coord_obj': LosAngeles500mGrid
-            },
-        ('los_angeles', 1000):
-            {
-                'pm_obj': LosAngeles1000mGridPurpleAirPM2018Trimmed,
-                'geo_obj': LosAngeles1000mGridGeoVector,
-                'geo_name_obj': LosAngeles1000mGridGeoName,
-                'coord_obj': LosAngeles1000mGrid
-            },
-        # ('utah', 500):
-        #     {
-        #         'pm_obj': LosAngeles1000mGridAirQuality201811Trimmed,
-        #         'meo_obj': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
-        #         'geo_obj': LosAngeles1000mGridGeoVector,
-        #         'geo_name_obj': LosAngeles1000mGridGeoName,
-        #         'coord_obj': LosAngeles1000mGrid
-        # }
+        500: {
+            'pm_obj': LosAngeles500mGridPurpleAirPM2018,
+            'geo_obj': LosAngeles500mGridGeoVector,
+            'geo_name_obj': LosAngeles500mGridGeoName,
+            'coord_obj': LosAngeles500mGrid,
+            '01': LosAngeles500mGridMeoDarkSkyInterpolate201801,
+            '02': LosAngeles500mGridMeoDarkSkyInterpolate201802,
+            '03': LosAngeles500mGridMeoDarkSkyInterpolate201803,
+            '04': LosAngeles500mGridMeoDarkSkyInterpolate201804,
+            '05': LosAngeles500mGridMeoDarkSkyInterpolate201805,
+            '06': LosAngeles500mGridMeoDarkSkyInterpolate201806,
+            '07': LosAngeles500mGridMeoDarkSkyInterpolate201807,
+            '08': LosAngeles500mGridMeoDarkSkyInterpolate201808,
+            '09': LosAngeles500mGridMeoDarkSkyInterpolate201809,
+            '10': LosAngeles500mGridMeoDarkSkyInterpolate201810,
+            '11': LosAngeles500mGridMeoDarkSkyInterpolate201811,
+            '12': LosAngeles500mGridMeoDarkSkyInterpolate201812
+        },
+        1000: {
+            'pm_obj': LosAngeles1000mGridPurpleAirPM2018,
+            'geo_obj': LosAngeles1000mGridGeoVector,
+            'geo_name_obj': LosAngeles1000mGridGeoName,
+            'coord_obj': LosAngeles1000mGrid,
+            '01': LosAngeles1000mGridMeoDarkSkyInterpolate201801,
+            '02': LosAngeles1000mGridMeoDarkSkyInterpolate201802,
+            '03': LosAngeles1000mGridMeoDarkSkyInterpolate201803,
+            '04': LosAngeles1000mGridMeoDarkSkyInterpolate201804,
+            '05': LosAngeles1000mGridMeoDarkSkyInterpolate201805,
+            '06': LosAngeles1000mGridMeoDarkSkyInterpolate201806,
+            '07': LosAngeles1000mGridMeoDarkSkyInterpolate201807,
+            '08': LosAngeles1000mGridMeoDarkSkyInterpolate201808,
+            '09': LosAngeles1000mGridMeoDarkSkyInterpolate201809,
+            '10': LosAngeles1000mGridMeoDarkSkyInterpolate201810,
+            '11': LosAngeles1000mGridMeoDarkSkyInterpolate201811,
+            '12': LosAngeles1000mGridMeoDarkSkyInterpolate201812
+        }
     }
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', type=str, default='data/', help='data directory')
-    parser.add_argument('--mapping_mat', type=str, default='los_angeles_500m_grid_mat.npz')
-    parser.add_argument('--output_filename', type=str, default='los_angeles_500m_data_201802.npz')
-    parser.add_argument('--meo_obj', type=object, default=LosAngeles500mGridMeoDarkSkyInterpolate201802)
-    parser.add_argument('--min_time', type=str, default='2018-02-01', help='minimum timestamp')
-    parser.add_argument('--max_time', type=str, default='2018-03-01', help='maximum timestamp')
+    months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
-    args = parser.parse_args()
+    for res in [500, 1000]:
+        m_data_obj = data_obj[res]
+        for ix, month in enumerate(months):
+            target_data_obj = m_data_obj
+            target_data_obj['output_filename'] = 'data/los_angeles_{}m_2018{}.npz'.format(res, month)
+            target_data_obj['mapping_mat'] = 'data/los_angeles_{}m_grid_mat.npz'.format(res)
+            target_data_obj['meo_obj'] = m_data_obj[month]
+            target_data_obj['min_time'] = '2018-{}-01'.format(month)
+            if month != '12':
+                target_data_obj['max_time'] = '2018-{}-01'.format(months[ix + 1])
+            else:
+                target_data_obj['max_time'] = '2019-01-01'
 
-    target_data_obj = data_obj[('los_angeles', 500)]
-    target_data_obj['meo_obj'] = args.meo_obj
-    main(target_data_obj, args)
+            main(target_data_obj)

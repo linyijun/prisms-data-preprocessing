@@ -3,20 +3,7 @@ from sqlalchemy import func
 
 from data_models.common_db import engine, session
 from data_models.grid_model import *
-from utils import check_status
-
-
-def create_grid_table(config):
-
-    grid_obj = config['GRID_OBJ']
-
-    try:
-        grid_obj.__table__.drop(bind=engine, checkfirst=True)
-        grid_obj.__table__.create(bind=engine)
-        return {'status': 1, 'msg': ''}
-
-    except Exception as e:
-        return {'status': 0, 'msg': e}
+from utils import create_table
 
 
 def generate_grids(config, area=None):
@@ -53,10 +40,11 @@ def generate_grids(config, area=None):
 
         # session.add_all(obj_results)
         # session.commit()
-        return {'status': 1, 'msg': ''}
+        return
 
     except Exception as e:
-        return {'status': 0, 'msg': e}
+        print(e)
+        exit(-1)
 
 
 if __name__ == '__main__':
@@ -64,20 +52,20 @@ if __name__ == '__main__':
     LOS_ANGELES = {
 
         'AREA': 'los_angeles',
-        "BOUNDING_BOX": 'POLYGON((-118.5246 33.7322, -118.5246 34.1455, -118.1158 34.1455, -118.1158 33.7322, '
+        'BOUNDING_BOX': 'POLYGON((-118.5246 33.7322, -118.5246 34.1455, -118.1158 34.1455, -118.1158 33.7322, '
                         '-118.5246 33.7322))',
-        "EPSG": 6423,
+        'EPSG': 6423, # epsg for Los Angeles
         500: {
-            "GRID_OBJ": LosAngeles500mGrid,
-            "RESOLUTION": 500
+            'GRID_OBJ': LosAngeles500mGrid,
+            'RESOLUTION': 500
         },
         1000: {
-            "GRID_OBJ": LosAngeles1000mGrid,
-            "RESOLUTION": 1000,
+            'GRID_OBJ': LosAngeles1000mGrid,
+            'RESOLUTION': 1000,
         },
         5000: {
-            "GRID_OBJ": LosAngeles5000mGrid,
-            "RESOLUTION": 5000,
+            'GRID_OBJ': LosAngeles5000mGrid,
+            'RESOLUTION': 5000,
         }
     }
 
@@ -86,7 +74,6 @@ if __name__ == '__main__':
     conf['BOUNDING_BOX'] = target['BOUNDING_BOX']
     conf['EPSG'] = target['EPSG']
 
-    status = create_grid_table(conf)
-    check_status(status)
-    status = generate_grids(conf)
-    check_status(status)
+    """ !!! Be careful, create table would overwrite the original table """
+    # create_table(conf['GRID_OBJ'])
+    generate_grids(conf)

@@ -6,7 +6,7 @@ from data_models.common_db import Base
 # ----------------------------------------- DarkSky Tables Definition ----------------------------------------- #
 
 class DarkSkyTemplate(object):
-    __table_args__ = {'schema': 'auxiliary_data'}
+    __table_args__ = {'schema': 'meo_darksky'}
 
     uid = Column(BigInteger, primary_key=True, autoincrement=True)
     gid = Column(Integer, nullable=False, index=True)
@@ -36,8 +36,44 @@ class LosAngeles5000mGridMeoDarkSky201802(DarkSkyTemplate, Base):
     __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201802'
 
 
+class LosAngeles5000mGridMeoDarkSky201803(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201803'
+
+
+class LosAngeles5000mGridMeoDarkSky201804(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201804'
+
+
+class LosAngeles5000mGridMeoDarkSky201805(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201805'
+
+
+class LosAngeles5000mGridMeoDarkSky201806(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201806'
+
+
+class LosAngeles5000mGridMeoDarkSky201807(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201807'
+
+
+class LosAngeles5000mGridMeoDarkSky201808(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201808'
+
+
+class LosAngeles5000mGridMeoDarkSky201809(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201809'
+
+
+class LosAngeles5000mGridMeoDarkSky201810(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201810'
+
+
 class LosAngeles5000mGridMeoDarkSky201811(DarkSkyTemplate, Base):
     __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201811'
+
+
+class LosAngeles5000mGridMeoDarkSky201812(DarkSkyTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201812'
 
 
 class SaltLakeCity5000mGridMeoDarkSky201703201803(DarkSkyTemplate, Base):
@@ -65,9 +101,44 @@ class LosAngeles500mGridMeoDarkSkyInterpolate201802(DarkSkyInterpolateTemplate, 
     __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201802'
 
 
+class LosAngeles500mGridMeoDarkSkyInterpolate201803(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201803'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201804(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201804'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201805(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201805'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201806(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201806'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201807(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201807'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201808(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201808'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201809(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201809'
+
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201810(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201810'
+
+
 class LosAngeles500mGridMeoDarkSkyInterpolate201811(DarkSkyInterpolateTemplate, Base):
     __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201811'
 
+
+class LosAngeles500mGridMeoDarkSkyInterpolate201812(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_meo_darksky_interpolate_201812'
 
 # -------------------------------------------------------------------------------------- #
 
@@ -80,8 +151,44 @@ class LosAngeles1000mGridMeoDarkSkyInterpolate201802(DarkSkyInterpolateTemplate,
     __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201802'
 
 
+class LosAngeles1000mGridMeoDarkSkyInterpolate201803(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201803'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201804(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201804'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201805(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201805'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201806(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201806'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201807(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201807'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201808(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201808'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201809(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201809'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201810(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201810'
+
+
 class LosAngeles1000mGridMeoDarkSkyInterpolate201811(DarkSkyInterpolateTemplate, Base):
     __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201811'
+
+
+class LosAngeles1000mGridMeoDarkSkyInterpolate201812(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_meo_darksky_interpolate_201812'
 
 
 # -------------------------------------------------------------------------------------- #
@@ -95,8 +202,44 @@ class LosAngeles5000mGridMeoDarkSkyInterpolate201802(DarkSkyInterpolateTemplate,
     __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201802'
 
 
+class LosAngeles5000mGridMeoDarkSkyInterpolate201803(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201803'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201804(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201804'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201805(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201805'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201806(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201806'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201807(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201807'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201808(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201808'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201809(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201809'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201810(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201810'
+
+
 class LosAngeles5000mGridMeoDarkSkyInterpolate201811(DarkSkyInterpolateTemplate, Base):
     __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201811'
+
+
+class LosAngeles5000mGridMeoDarkSkyInterpolate201812(DarkSkyInterpolateTemplate, Base):
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_interpolate_201812'
 
 
 # -------------------------------------------------------------------------------------- #

@@ -10,7 +10,6 @@ class AirQualityTemplate(object):
     __table_args__ = {'schema': 'preprocess'}
 
     gid = Column(Integer, primary_key=True, nullable=False, index=True)
-    sensor_id = Column(Integer, nullable=False)
     timestamp = Column(DateTime(timezone=True), primary_key=True, nullable=False, index=True)
     pm25 = Column(Float(53))
 
@@ -39,21 +38,21 @@ class LosAngelesAirQualityLocations(Base):
 # --------------------------------------------------------------------------------------------------------------- #
 
 
-# ------------------------------------ Trimmed Air Quality Table Definition  ------------------------------------ #
-
-class AirQualityTrimmedTemplate(object):
-    __table_args__ = {'schema': 'preprocess'}
-
-    gid = Column(Integer, primary_key=True, nullable=False, index=True)
-    timestamp = Column(DateTime(timezone=True), primary_key=True, nullable=False, index=True)
-    pm25 = Column(Float(53))
-
-
-class LosAngeles500mGridPurpleAirPM2018Trimmed(AirQualityTrimmedTemplate, Base):
-    __tablename__ = 'los_angeles_500m_grid_purple_air_pm25_2018_trimmed_view'
-
-
-class LosAngeles1000mGridPurpleAirPM2018Trimmed(AirQualityTrimmedTemplate, Base):
-    __tablename__ = 'los_angeles_1000m_grid_purple_air_pm25_2018_trimmed_view'
-
-# --------------------------------------------------------------------------------------------------------------- #
+# # ------------------------------------ Trimmed Air Quality Table Definition  ------------------------------------ #
+#
+# class AirQualityTrimmedTemplate(object):
+#     __table_args__ = {'schema': 'preprocess'}
+#
+#     gid = Column(Integer, primary_key=True, nullable=False, index=True)
+#     timestamp = Column(DateTime(timezone=True), primary_key=True, nullable=False, index=True)
+#     pm25 = Column(Float(53))
+#
+#
+# class LosAngeles500mGridPurpleAirPM2018Trimmed(AirQualityTrimmedTemplate, Base):
+#     __tablename__ = 'los_angeles_500m_grid_purple_air_pm25_2018_trimmed_view'
+#
+#
+# class LosAngeles1000mGridPurpleAirPM2018Trimmed(AirQualityTrimmedTemplate, Base):
+#     __tablename__ = 'los_angeles_1000m_grid_purple_air_pm25_2018_trimmed_view'
+#
+# # --------------------------------------------------------------------------------------------------------------- #

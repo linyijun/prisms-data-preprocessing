@@ -5,19 +5,7 @@ from data_models.common_db import session, engine
 from data_models.grid_model import *
 from data_models.osm_model import *
 from data_models.geo_feature_model import *
-
-
-def create_geo_feature_table(config):
-
-    geo_feature = config['GEO_FEATURE_OBJ']
-
-    try:
-        geo_feature.__table__.drop(bind=engine, checkfirst=True)
-        geo_feature.__table__.create(bind=engine)
-        return {'status': 1, 'msg': ''}
-
-    except Exception as e:
-        return {'status': 0, 'msg': e}
+from utils import create_table
 
 
 def crop_osm(osm_table, bounding_box):
@@ -41,7 +29,7 @@ def compute_features_from_osm(config):
     try:
         for feature_name, osm_table in osm_tables.items():
             geo_feature_type = osm_table.wkb_geometry.type.geometry_type
-            cropped_osm = crop_osm(osm_table, bounding_box)
+            cropped_osm = crop_osm(osm_table, bounding_box)  # crop the OSM data with a bounding box
 
             sub_query = session.query(grid_obj.gid, cropped_osm.c.fclass,
                                       func.ST_GeogFromWKB(
@@ -81,22 +69,15 @@ def compute_features_from_osm(config):
             for res in results:
                 obj_results.append(geo_feature_obj(gid=res[0], feature_type=res[1], geo_feature=res[2],
                                                    value=res[3], measurement=res[4]))
-            session.add_all(obj_results)
-            session.commit()
+            # session.add_all(obj_results)
+            # session.commit()
             print('{} has finished'.format(feature_name))
 
-        return {'status': 1, 'msg': ''}
+        return
 
     except Exception as e:
-        return {'status': 0, 'msg': e}
-
-
-def check_status(status):
-    if status['status'] == 0:
-        print(status['msg'])
-        exit(1)
-    else:
-        pass
+        print(e)
+        exit(-1)
 
 
 if __name__ == '__main__':
@@ -122,25 +103,23 @@ if __name__ == '__main__':
             'water_a': CaliforniaOsmWaterA,
             'waterways': CaliforniaOsmWaterway
         },
-        "BOUNDING_BOX": 'POLYGON((-118.5246 33.7322, -118.5246 34.1455, -118.1158 34.1455, -118.1158 33.7322, '
+        'BOUNDING_BOX': 'POLYGON((-118.5246 33.7322, -118.5246 34.1455, -118.1158 34.1455, -118.1158 33.7322, '
                         '-118.5246 33.7322))',
         500: {
-            "GRID_OBJ": LosAngeles500mGrid,
-            "GEO_FEATURE_OBJ": LosAngeles500mGridGeoFeature,
+            'GRID_OBJ': LosAngeles500mGrid,
+            'GEO_FEATURE_OBJ': LosAngeles500mGridGeoFeature,
         },
         1000: {
-            "GRID_OBJ": LosAngeles1000mGrid,
-            "GEO_FEATURE_OBJ": LosAngeles1000mGridGeoFeature,
+            'GRID_OBJ': LosAngeles1000mGrid,
+            'GEO_FEATURE_OBJ': LosAngeles1000mGridGeoFeature,
         }
     }
 
     target = LOS_ANGELES
-    res = 1000
-    conf = target[res]
+    conf = target[1000]
     conf['OSM'] = target['OSM']
     conf['BOUNDING_BOX'] = target['BOUNDING_BOX']
 
-    status = create_geo_feature_table(conf)
-    check_status(status)
-    status = compute_features_from_osm(conf)
-    check_status(status)
+    """ !!! Be careful, create table would overwrite the original table """
+    # create_table(conf['GEO_FEATURE_OBJ'])
+    compute_features_from_osm(conf)
