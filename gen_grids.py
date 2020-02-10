@@ -50,11 +50,10 @@ def generate_grids(config, area=None):
 if __name__ == '__main__':
 
     LOS_ANGELES = {
-
         'AREA': 'los_angeles',
         'BOUNDING_BOX': 'POLYGON((-118.5246 33.7322, -118.5246 34.1455, -118.1158 34.1455, -118.1158 33.7322, '
                         '-118.5246 33.7322))',
-        'EPSG': 6423, # epsg for Los Angeles
+        'EPSG': 6423,  # epsg for Los Angeles
         500: {
             'GRID_OBJ': LosAngeles500mGrid,
             'RESOLUTION': 500

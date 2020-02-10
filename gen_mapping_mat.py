@@ -38,6 +38,16 @@ def get_vertical_neighbor(this_lon, this_lat, lat_list, lat_dict, coord_dict, di
 
 
 def gen_matrix(coord_obj):
+    """
+        generate a matrix as
+        mat = array([[6917, 6918, 6919, ..., 6990, 6991, 6992],
+                     [6841, 6842, 6843, ..., 6914, 6915, 6916],
+                     [6765, 6766, 6767, ..., 6838, 6839, 6840],
+                     ...,
+                     [153, 154, 155, ..., 226, 227, 228],
+                     [77, 78, 79, ..., 150, 151, 152],
+                     [1, 2, 3, ..., 74, 75, 76]])
+    """
 
     coord_df = pd.read_sql(session.query(coord_obj.gid, coord_obj.lon, coord_obj.lat).statement, session.bind)
     coord_df = coord_df.round(10)
@@ -49,7 +59,7 @@ def gen_matrix(coord_obj):
     n_rows = len(lat_list)
     n_cols = min([len(v) for k, v in lat_dict.items()])
 
-    # find neighbors ["left", "right", "up", "down"] for the gid
+    """ find neighbors ["left", "right", "up", "down"] for the gid """
     neighbors = {}
     for idx, row in coord_df.iterrows():
         gid, this_lon, this_lat = int(row['gid']), row['lon'], row['lat']
@@ -59,7 +69,7 @@ def gen_matrix(coord_obj):
         neighbors[gid]['up'] = get_vertical_neighbor(this_lon, this_lat, lat_list, lat_dict, coord_dict, direction=1)
         neighbors[gid]['down'] = get_vertical_neighbor(this_lon, this_lat, lat_list, lat_dict, coord_dict, direction=-1)
 
-    # convert neighbors to the matrix
+    """ convert neighbors to the matrix """
     mat = np.full(([n_rows, n_cols]), -1)
     curr_gid = min(coord_dict.values())
     curr_row = curr_gid
@@ -73,20 +83,10 @@ def gen_matrix(coord_obj):
                 curr_gid = neighbors[curr_row]['up']
                 curr_row = curr_gid
 
-    """
-        mat = array([[6917, 6918, 6919, ..., 6990, 6991, 6992],
-                     [6841, 6842, 6843, ..., 6914, 6915, 6916],
-                     [6765, 6766, 6767, ..., 6838, 6839, 6840],
-                     ...,
-                     [153, 154, 155, ..., 226, 227, 228],
-                     [77, 78, 79, ..., 150, 151, 152],
-                     [1, 2, 3, ..., 74, 75, 76]])
-    """
-
     return mat
 
 
-def main(coord_obj, args):
+def main(coord_obj, output_file):
 
     mat = gen_matrix(coord_obj)
     global_n_rows, global_n_cols = mat.shape
@@ -95,17 +95,13 @@ def main(coord_obj, args):
     print('Number of cols = {}.'.format(global_n_cols))
 
     np.savez_compressed(
-        os.path.join(args.data_dir, args.output_filename),
+        output_file,
         mat=mat
     )
 
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', type=str, default='data/', help='output directory')
-    parser.add_argument('--output_fname', type=str, default='salt_lake_city_500m_grid_mat.npz', help='output filename')
-    args = parser.parse_args()
-
+    out_file = 'data/salt_lake_city_500m_grid_mat.npz'
     target_coord_obj = SaltLakeCity500mGrid
-    main(target_coord_obj, args)
+    main(target_coord_obj, out_file)

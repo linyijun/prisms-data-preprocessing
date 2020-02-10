@@ -90,6 +90,10 @@ def gen_time_vector(time_list, grid_list):
     day_arr = expand_dims(day_arr)
     time_vector = np.concatenate([time_vector, day_arr], axis=-1)
 
+    month_arr = np.array([t.month for t in time_list])
+    month_arr = expand_dims(month_arr)
+    time_vector = np.concatenate([time_vector, month_arr], axis=-1)
+
     print('The shape of time vector = {}.'.format(time_vector.shape))
     return time_vector
 
@@ -161,10 +165,9 @@ def main(input_obj):
     geo_obj = input_obj['geo_obj']
     geo_name_obj = input_obj['geo_name_obj']
     coord_obj = input_obj['coord_obj']
-    mapping_mat_file = input_obj['mapping_mat']
 
     # load mapping matrix
-    mapping_mat = np.load(mapping_mat_file)['mat']
+    mapping_mat = np.load(input_obj['mapping_mat_file'])['mat']
 
     # load grids
     coord_df = pd.read_sql(session.query(coord_obj.gid, coord_obj.lon, coord_obj.lat).statement, session.bind)
@@ -180,37 +183,44 @@ def main(input_obj):
     print('Number of time points = {}.'.format(len(time_list)))
 
     # generate label data
-    print("...Generating label data...")
+    print('...Generating label data...')
     label_mat = gen_label_mat(pm_obj, time_list, mapping_mat)
 
     # generate dynamic data
-    print("...Generating dynamic data...")
+    print('...Generating dynamic data...')
     meo_vector = gen_meo_vector(meo_obj, time_list, grid_list)
     time_vector = gen_time_vector(time_list, grid_list)
+    dynamic_vector = np.concatenate([meo_vector, time_vector], axis=-1)
+
+    # convert to feature matrix
+    dynamic_mat = dynamic_vector.swapaxes(1, 2)  # (n_times, n_loc, n_features) => (n_times, n_features, n_loc)
+    dynamic_mat = gen_grid_data(dynamic_mat, grid_list, mapping_mat)
+    print('The shape of dynamic matrix = {}.'.format(dynamic_mat.shape))
 
     # generate static data
-    print("...Generating static data...")
+    print('...Generating static data...')
     geo_vector, geo_name_list = gen_geo_vector(geo_obj, geo_name_obj, grid_list)
+    geo_vector = geo_vector.reshape(1, geo_vector.shape[0], geo_vector.shape[1])
+
+    # convert to feature matrix
+    static_mat = geo_vector.swapaxes(1, 2)  # (1, n_loc, n_features) => (1, n_features, n_loc)
+    static_mat = gen_grid_data(static_mat, grid_list, mapping_mat)
+    print('The shape of static matrix = {}.'.format(static_mat.shape))
 
     # combine static vector and dynamic vector
-    feature_vector = np.concatenate([meo_vector, time_vector], axis=-1)
-    arr = np.expand_dims(geo_vector, axis=0)
-    arr = np.repeat(arr, len(time_list), axis=0)
-    feature_vector = np.concatenate([feature_vector, arr], axis=-1)
-
-    # # convert to feature matrix
-    feature_mat = feature_vector.swapaxes(1, 2)  # (n_times, n_loc, n_features) => (n_times, n_features, n_loc)
-    feature_mat = gen_grid_data(feature_mat, grid_list, mapping_mat)
-    print('The shape of feature matrix = {}.'.format(feature_mat.shape))
+    # arr = np.expand_dims(geo_vector, axis=0)
+    # arr = np.repeat(arr, len(time_list), axis=0)
+    # feature_vector = np.concatenate([feature_vector, arr], axis=-1)
 
     np.savez_compressed(
-        os.path.join(input_obj['output_filename']),
+        os.path.join(input_obj['output_file']),
         label_mat=label_mat,
-        feature_mat=feature_mat,
-        dynamic_features=np.array(['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed',
-                                   'wind_direction', 'cloud_cover', 'visibility', 'hourofday', 'dayofweek', 'day']),
+        dynamic_mat=dynamic_mat,
+        static_mat=static_mat,
+        dynamic_features=np.array(['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed', 'wind_direction',
+                                   'cloud_cover', 'visibility', 'hourofday', 'dayofweek', 'day', 'month']),
         static_features=np.array(geo_name_list),
-        grids=np.array(grid_list)
+        mapping_mat=mapping_mat
     )
 
 
@@ -262,8 +272,8 @@ if __name__ == "__main__":
         m_data_obj = data_obj[res]
         for ix, month in enumerate(months):
             target_data_obj = m_data_obj
-            target_data_obj['output_filename'] = 'data/los_angeles_{}m_2018{}.npz'.format(res, month)
-            target_data_obj['mapping_mat'] = 'data/los_angeles_{}m_grid_mat.npz'.format(res)
+            target_data_obj['output_file'] = 'data/los_angeles_{}m_2018{}.npz'.format(res, month)
+            target_data_obj['mapping_mat_file'] = 'data/los_angeles_{}m_grid_mat.npz'.format(res)
             target_data_obj['meo_obj'] = m_data_obj[month]
             target_data_obj['min_time'] = '2018-{}-01'.format(month)
             if month != '12':
