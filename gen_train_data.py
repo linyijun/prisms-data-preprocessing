@@ -272,7 +272,7 @@ if __name__ == "__main__":
         m_data_obj = data_obj[res]
         for ix, month in enumerate(months):
             target_data_obj = m_data_obj
-            target_data_obj['output_file'] = 'data/los_angeles_{}m_2018{}.npz'.format(res, month)
+            target_data_obj['output_file'] = 'data/los_angeles_{}m_2018_{}.npz'.format(res, month)
             target_data_obj['mapping_mat_file'] = 'data/los_angeles_{}m_grid_mat.npz'.format(res)
             target_data_obj['meo_obj'] = m_data_obj[month]
             target_data_obj['min_time'] = '2018-{}-01'.format(month)
