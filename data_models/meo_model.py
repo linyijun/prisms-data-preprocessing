@@ -109,7 +109,7 @@ class LosAngeles5000mGridMeoDarkSky201908(DarkSkyTemplate, Base):
 
 
 class LosAngeles5000mGridMeoDarkSky201909(DarkSkyTemplate, Base):
-    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201809'
+    __tablename__ = 'los_angeles_5000m_grid_meo_darksky_201909'
 
 
 class LosAngeles5000mGridMeoDarkSky201910(DarkSkyTemplate, Base):

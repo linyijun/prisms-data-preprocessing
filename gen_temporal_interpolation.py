@@ -70,18 +70,18 @@ if __name__ == '__main__':
         # 10: [LosAngeles5000mGridMeoDarkSky201810, LosAngeles5000mGridMeoDarkSkyInterpolate201810],
         # 11: [LosAngeles5000mGridMeoDarkSky201811, LosAngeles5000mGridMeoDarkSkyInterpolate201811],
         # 12: [LosAngeles5000mGridMeoDarkSky201812, LosAngeles5000mGridMeoDarkSkyInterpolate201812]
-        1: [LosAngeles5000mGridMeoDarkSky201901, LosAngeles5000mGridMeoDarkSkyInterpolate201801],
-        2: [LosAngeles5000mGridMeoDarkSky201902, LosAngeles5000mGridMeoDarkSkyInterpolate201802],
-        3: [LosAngeles5000mGridMeoDarkSky201903, LosAngeles5000mGridMeoDarkSkyInterpolate201803],
-        4: [LosAngeles5000mGridMeoDarkSky201904, LosAngeles5000mGridMeoDarkSkyInterpolate201804],
-        5: [LosAngeles5000mGridMeoDarkSky201905, LosAngeles5000mGridMeoDarkSkyInterpolate201805],
-        6: [LosAngeles5000mGridMeoDarkSky201906, LosAngeles5000mGridMeoDarkSkyInterpolate201806],
-        7: [LosAngeles5000mGridMeoDarkSky201907, LosAngeles5000mGridMeoDarkSkyInterpolate201807],
-        8: [LosAngeles5000mGridMeoDarkSky201908, LosAngeles5000mGridMeoDarkSkyInterpolate201808],
-        9: [LosAngeles5000mGridMeoDarkSky201909, LosAngeles5000mGridMeoDarkSkyInterpolate201809],
-        10: [LosAngeles5000mGridMeoDarkSky201910, LosAngeles5000mGridMeoDarkSkyInterpolate201810],
-        11: [LosAngeles5000mGridMeoDarkSky201911, LosAngeles5000mGridMeoDarkSkyInterpolate201811],
-        12: [LosAngeles5000mGridMeoDarkSky201912, LosAngeles5000mGridMeoDarkSkyInterpolate201812]
+        1: [LosAngeles5000mGridMeoDarkSky201901, LosAngeles5000mGridMeoDarkSkyInterpolate201901],
+        2: [LosAngeles5000mGridMeoDarkSky201902, LosAngeles5000mGridMeoDarkSkyInterpolate201902],
+        3: [LosAngeles5000mGridMeoDarkSky201903, LosAngeles5000mGridMeoDarkSkyInterpolate201903],
+        4: [LosAngeles5000mGridMeoDarkSky201904, LosAngeles5000mGridMeoDarkSkyInterpolate201904],
+        5: [LosAngeles5000mGridMeoDarkSky201905, LosAngeles5000mGridMeoDarkSkyInterpolate201905],
+        6: [LosAngeles5000mGridMeoDarkSky201906, LosAngeles5000mGridMeoDarkSkyInterpolate201906],
+        7: [LosAngeles5000mGridMeoDarkSky201907, LosAngeles5000mGridMeoDarkSkyInterpolate201907],
+        8: [LosAngeles5000mGridMeoDarkSky201908, LosAngeles5000mGridMeoDarkSkyInterpolate201908],
+        9: [LosAngeles5000mGridMeoDarkSky201909, LosAngeles5000mGridMeoDarkSkyInterpolate201909],
+        10: [LosAngeles5000mGridMeoDarkSky201910, LosAngeles5000mGridMeoDarkSkyInterpolate201910],
+        11: [LosAngeles5000mGridMeoDarkSky201911, LosAngeles5000mGridMeoDarkSkyInterpolate201911],
+        12: [LosAngeles5000mGridMeoDarkSky201912, LosAngeles5000mGridMeoDarkSkyInterpolate201912]
     }
 
     for obj in [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12]:
