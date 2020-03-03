@@ -27,8 +27,8 @@ def interpolate_time(old_obj, target_obj, time_list, features):
             inter_data = df.interpolate(method='linear').reset_index()
 
             obj_results = [target_obj(gid=loc, timestamp=dt[0], data=dt[1:]) for dt in inter_data.values.tolist()]
-            # session.add_all(obj_results)
-            # session.commit()
+            session.add_all(obj_results)
+            session.commit()
 
             print('Location {} has finished. {} records has been generated.'.format(loc, len(inter_data)))
         return
@@ -51,25 +51,37 @@ def main(old_meo_obj, target_meo_obj):
     print(len(time_list))
 
     """ !!! Be careful, create table would overwrite the original table """
-    # create_table(target_meo_obj)
+    create_table(target_meo_obj)
     interpolate_time(old_meo_obj, target_meo_obj, time_list, meo_features)
 
 
 if __name__ == '__main__':
 
     query_obj = {
-        1: [LosAngeles5000mGridMeoDarkSky201801, LosAngeles5000mGridMeoDarkSkyInterpolate201801],
-        2: [LosAngeles5000mGridMeoDarkSky201802, LosAngeles5000mGridMeoDarkSkyInterpolate201802],
-        3: [LosAngeles5000mGridMeoDarkSky201803, LosAngeles5000mGridMeoDarkSkyInterpolate201803],
-        4: [LosAngeles5000mGridMeoDarkSky201804, LosAngeles5000mGridMeoDarkSkyInterpolate201804],
-        5: [LosAngeles5000mGridMeoDarkSky201805, LosAngeles5000mGridMeoDarkSkyInterpolate201805],
-        6: [LosAngeles5000mGridMeoDarkSky201806, LosAngeles5000mGridMeoDarkSkyInterpolate201806],
-        7: [LosAngeles5000mGridMeoDarkSky201807, LosAngeles5000mGridMeoDarkSkyInterpolate201807],
-        8: [LosAngeles5000mGridMeoDarkSky201808, LosAngeles5000mGridMeoDarkSkyInterpolate201808],
-        9: [LosAngeles5000mGridMeoDarkSky201809, LosAngeles5000mGridMeoDarkSkyInterpolate201809],
-        10: [LosAngeles5000mGridMeoDarkSky201810, LosAngeles5000mGridMeoDarkSkyInterpolate201810],
-        11: [LosAngeles5000mGridMeoDarkSky201811, LosAngeles5000mGridMeoDarkSkyInterpolate201811],
-        12: [LosAngeles5000mGridMeoDarkSky201812, LosAngeles5000mGridMeoDarkSkyInterpolate201812]
+        # 1: [LosAngeles5000mGridMeoDarkSky201801, LosAngeles5000mGridMeoDarkSkyInterpolate201801],
+        # 2: [LosAngeles5000mGridMeoDarkSky201802, LosAngeles5000mGridMeoDarkSkyInterpolate201802],
+        # 3: [LosAngeles5000mGridMeoDarkSky201803, LosAngeles5000mGridMeoDarkSkyInterpolate201803],
+        # 4: [LosAngeles5000mGridMeoDarkSky201804, LosAngeles5000mGridMeoDarkSkyInterpolate201804],
+        # 5: [LosAngeles5000mGridMeoDarkSky201805, LosAngeles5000mGridMeoDarkSkyInterpolate201805],
+        # 6: [LosAngeles5000mGridMeoDarkSky201806, LosAngeles5000mGridMeoDarkSkyInterpolate201806],
+        # 7: [LosAngeles5000mGridMeoDarkSky201807, LosAngeles5000mGridMeoDarkSkyInterpolate201807],
+        # 8: [LosAngeles5000mGridMeoDarkSky201808, LosAngeles5000mGridMeoDarkSkyInterpolate201808],
+        # 9: [LosAngeles5000mGridMeoDarkSky201809, LosAngeles5000mGridMeoDarkSkyInterpolate201809],
+        # 10: [LosAngeles5000mGridMeoDarkSky201810, LosAngeles5000mGridMeoDarkSkyInterpolate201810],
+        # 11: [LosAngeles5000mGridMeoDarkSky201811, LosAngeles5000mGridMeoDarkSkyInterpolate201811],
+        # 12: [LosAngeles5000mGridMeoDarkSky201812, LosAngeles5000mGridMeoDarkSkyInterpolate201812]
+        1: [LosAngeles5000mGridMeoDarkSky201901, LosAngeles5000mGridMeoDarkSkyInterpolate201801],
+        2: [LosAngeles5000mGridMeoDarkSky201902, LosAngeles5000mGridMeoDarkSkyInterpolate201802],
+        3: [LosAngeles5000mGridMeoDarkSky201903, LosAngeles5000mGridMeoDarkSkyInterpolate201803],
+        4: [LosAngeles5000mGridMeoDarkSky201904, LosAngeles5000mGridMeoDarkSkyInterpolate201804],
+        5: [LosAngeles5000mGridMeoDarkSky201905, LosAngeles5000mGridMeoDarkSkyInterpolate201805],
+        6: [LosAngeles5000mGridMeoDarkSky201906, LosAngeles5000mGridMeoDarkSkyInterpolate201806],
+        7: [LosAngeles5000mGridMeoDarkSky201907, LosAngeles5000mGridMeoDarkSkyInterpolate201807],
+        8: [LosAngeles5000mGridMeoDarkSky201908, LosAngeles5000mGridMeoDarkSkyInterpolate201808],
+        9: [LosAngeles5000mGridMeoDarkSky201909, LosAngeles5000mGridMeoDarkSkyInterpolate201809],
+        10: [LosAngeles5000mGridMeoDarkSky201910, LosAngeles5000mGridMeoDarkSkyInterpolate201810],
+        11: [LosAngeles5000mGridMeoDarkSky201911, LosAngeles5000mGridMeoDarkSkyInterpolate201811],
+        12: [LosAngeles5000mGridMeoDarkSky201912, LosAngeles5000mGridMeoDarkSkyInterpolate201812]
     }
 
     for obj in [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12]:

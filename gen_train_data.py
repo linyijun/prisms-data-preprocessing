@@ -86,13 +86,17 @@ def gen_time_vector(time_list, grid_list):
     dayofweek_arr = expand_dims(dayofweek_arr)
     time_vector = np.concatenate([time_vector, dayofweek_arr], axis=-1)
 
-    day_arr = np.array([t.day for t in time_list])
-    day_arr = expand_dims(day_arr)
-    time_vector = np.concatenate([time_vector, day_arr], axis=-1)
+    dayofmonth_arr = np.array([t.day for t in time_list])
+    dayofmonth_arr = expand_dims(dayofmonth_arr)
+    time_vector = np.concatenate([time_vector, dayofmonth_arr], axis=-1)
 
     month_arr = np.array([t.month for t in time_list])
     month_arr = expand_dims(month_arr)
     time_vector = np.concatenate([time_vector, month_arr], axis=-1)
+
+    dayofyear_arr = np.array([t.timetuple().tm_yday for t in time_list])
+    dayofyear_arr = expand_dims(dayofyear_arr)
+    time_vector = np.concatenate([time_vector, dayofyear_arr], axis=-1)
 
     print('The shape of time vector = {}.'.format(time_vector.shape))
     return time_vector
@@ -190,6 +194,7 @@ def main(input_obj):
     print('...Generating dynamic data...')
     meo_vector = gen_meo_vector(meo_obj, time_list, grid_list)
     time_vector = gen_time_vector(time_list, grid_list)
+
     dynamic_vector = np.concatenate([meo_vector, time_vector], axis=-1)
 
     # convert to feature matrix
@@ -218,7 +223,7 @@ def main(input_obj):
         dynamic_mat=dynamic_mat,
         static_mat=static_mat,
         dynamic_features=np.array(['temperature', 'dew_point', 'humidity', 'pressure', 'wind_speed', 'wind_direction',
-                                   'cloud_cover', 'visibility', 'hourofday', 'dayofweek', 'day', 'month']),
+                                   'cloud_cover', 'visibility', 'hourofday', 'dayofweek', 'day', 'month', 'dayofyear']),
         static_features=np.array(geo_name_list),
         mapping_mat=mapping_mat
     )

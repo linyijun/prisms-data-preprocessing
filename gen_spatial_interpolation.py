@@ -44,8 +44,8 @@ def interpolate_space(**kwargs):
             inter_data = griddata(points, values, target_points, method=inter_method)
 
             obj_results = [target_obj(gid=target_id[i], timestamp=t, data=v) for i, v in enumerate(inter_data.tolist())]
-            # session.add_all(obj_results)
-            # session.commit()
+            session.add_all(obj_results)
+            session.commit()
 
             print('Timestamp {} has finished. {} records has been generated.'.format(t, len(inter_data)))
         return
@@ -76,37 +76,61 @@ def main(**kwargs):
         kwargs['locations'] = sorted([loc[0] for loc in session.query(target_aq_obj.gid).distinct().all()])
 
     """ !!! Be careful, create table would overwrite the original table """
-    # create_table(kwargs['target_obj'])
+    create_table(kwargs['target_obj'])
     interpolate_space(**kwargs)
 
 
 if __name__ == '__main__':
 
     query_obj = {
-        (1, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201801, LosAngeles500mGridMeoDarkSkyInterpolate201801],
-        (1, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201801, LosAngeles1000mGridMeoDarkSkyInterpolate201801],
-        (2, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201802, LosAngeles500mGridMeoDarkSkyInterpolate201802],
-        (2, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201802, LosAngeles1000mGridMeoDarkSkyInterpolate201802],
-        (3, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201803, LosAngeles500mGridMeoDarkSkyInterpolate201803],
-        (3, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201803, LosAngeles1000mGridMeoDarkSkyInterpolate201803],
-        (4, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201804, LosAngeles500mGridMeoDarkSkyInterpolate201804],
-        (4, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201804, LosAngeles1000mGridMeoDarkSkyInterpolate201804],
-        (5, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201805, LosAngeles500mGridMeoDarkSkyInterpolate201805],
-        (5, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201805, LosAngeles1000mGridMeoDarkSkyInterpolate201805],
-        (6, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201806, LosAngeles500mGridMeoDarkSkyInterpolate201806],
-        (6, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201806, LosAngeles1000mGridMeoDarkSkyInterpolate201806],
-        (7, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201807, LosAngeles500mGridMeoDarkSkyInterpolate201807],
-        (7, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201807, LosAngeles1000mGridMeoDarkSkyInterpolate201807],
-        (8, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201808, LosAngeles500mGridMeoDarkSkyInterpolate201808],
-        (8, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201808, LosAngeles1000mGridMeoDarkSkyInterpolate201808],
-        (9, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201809, LosAngeles500mGridMeoDarkSkyInterpolate201809],
-        (9, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201809, LosAngeles1000mGridMeoDarkSkyInterpolate201809],
-        (10, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201810, LosAngeles500mGridMeoDarkSkyInterpolate201810],
-        (10, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201810, LosAngeles1000mGridMeoDarkSkyInterpolate201810],
-        (11, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201811, LosAngeles500mGridMeoDarkSkyInterpolate201811],
-        (11, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201811, LosAngeles1000mGridMeoDarkSkyInterpolate201811],
-        (12, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201812, LosAngeles500mGridMeoDarkSkyInterpolate201812],
-        (12, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201812, LosAngeles1000mGridMeoDarkSkyInterpolate201812],
+        # (1, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201801, LosAngeles500mGridMeoDarkSkyInterpolate201801],
+        # (1, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201801, LosAngeles1000mGridMeoDarkSkyInterpolate201801],
+        # (2, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201802, LosAngeles500mGridMeoDarkSkyInterpolate201802],
+        # (2, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201802, LosAngeles1000mGridMeoDarkSkyInterpolate201802],
+        # (3, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201803, LosAngeles500mGridMeoDarkSkyInterpolate201803],
+        # (3, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201803, LosAngeles1000mGridMeoDarkSkyInterpolate201803],
+        # (4, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201804, LosAngeles500mGridMeoDarkSkyInterpolate201804],
+        # (4, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201804, LosAngeles1000mGridMeoDarkSkyInterpolate201804],
+        # (5, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201805, LosAngeles500mGridMeoDarkSkyInterpolate201805],
+        # (5, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201805, LosAngeles1000mGridMeoDarkSkyInterpolate201805],
+        # (6, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201806, LosAngeles500mGridMeoDarkSkyInterpolate201806],
+        # (6, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201806, LosAngeles1000mGridMeoDarkSkyInterpolate201806],
+        # (7, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201807, LosAngeles500mGridMeoDarkSkyInterpolate201807],
+        # (7, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201807, LosAngeles1000mGridMeoDarkSkyInterpolate201807],
+        # (8, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201808, LosAngeles500mGridMeoDarkSkyInterpolate201808],
+        # (8, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201808, LosAngeles1000mGridMeoDarkSkyInterpolate201808],
+        # (9, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201809, LosAngeles500mGridMeoDarkSkyInterpolate201809],
+        # (9, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201809, LosAngeles1000mGridMeoDarkSkyInterpolate201809],
+        # (10, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201810, LosAngeles500mGridMeoDarkSkyInterpolate201810],
+        # (10, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201810, LosAngeles1000mGridMeoDarkSkyInterpolate201810],
+        # (11, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201811, LosAngeles500mGridMeoDarkSkyInterpolate201811],
+        # (11, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201811, LosAngeles1000mGridMeoDarkSkyInterpolate201811],
+        # (12, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201812, LosAngeles500mGridMeoDarkSkyInterpolate201812],
+        # (12, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201812, LosAngeles1000mGridMeoDarkSkyInterpolate201812],
+        (1, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201901, LosAngeles500mGridMeoDarkSkyInterpolate201901],
+        (1, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201901, LosAngeles1000mGridMeoDarkSkyInterpolate201901],
+        (2, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201902, LosAngeles500mGridMeoDarkSkyInterpolate201902],
+        (2, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201902, LosAngeles1000mGridMeoDarkSkyInterpolate201902],
+        (3, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201903, LosAngeles500mGridMeoDarkSkyInterpolate201903],
+        (3, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201903, LosAngeles1000mGridMeoDarkSkyInterpolate201903],
+        (4, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201904, LosAngeles500mGridMeoDarkSkyInterpolate201904],
+        (4, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201904, LosAngeles1000mGridMeoDarkSkyInterpolate201904],
+        (5, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201905, LosAngeles500mGridMeoDarkSkyInterpolate201905],
+        (5, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201905, LosAngeles1000mGridMeoDarkSkyInterpolate201905],
+        (6, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201906, LosAngeles500mGridMeoDarkSkyInterpolate201906],
+        (6, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201906, LosAngeles1000mGridMeoDarkSkyInterpolate201906],
+        (7, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201907, LosAngeles500mGridMeoDarkSkyInterpolate201907],
+        (7, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201907, LosAngeles1000mGridMeoDarkSkyInterpolate201907],
+        (8, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201908, LosAngeles500mGridMeoDarkSkyInterpolate201908],
+        (8, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201908, LosAngeles1000mGridMeoDarkSkyInterpolate201908],
+        (9, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201909, LosAngeles500mGridMeoDarkSkyInterpolate201909],
+        (9, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201909, LosAngeles1000mGridMeoDarkSkyInterpolate201909],
+        (10, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201910, LosAngeles500mGridMeoDarkSkyInterpolate201910],
+        (10, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201910, LosAngeles1000mGridMeoDarkSkyInterpolate201910],
+        (11, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201911, LosAngeles500mGridMeoDarkSkyInterpolate201911],
+        (11, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201911, LosAngeles1000mGridMeoDarkSkyInterpolate201911],
+        (12, 500): [LosAngeles5000mGridMeoDarkSkyInterpolate201912, LosAngeles500mGridMeoDarkSkyInterpolate201912],
+        (12, 1000): [LosAngeles5000mGridMeoDarkSkyInterpolate201912, LosAngeles1000mGridMeoDarkSkyInterpolate201912],
     }
 
     for obj in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]:

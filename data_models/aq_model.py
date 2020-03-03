@@ -21,6 +21,14 @@ class LosAngeles500mGridPurpleAirPM2018(AirQualityTemplate, Base):
 class LosAngeles1000mGridPurpleAirPM2018(AirQualityTemplate, Base):
     __tablename__ = 'los_angeles_1000m_grid_purple_air_pm25_2018'
 
+
+class LosAngeles500mGridPurpleAirPM2019(AirQualityTemplate, Base):
+    __tablename__ = 'los_angeles_500m_grid_purple_air_pm25_2019'
+
+
+class LosAngeles1000mGridPurpleAirPM2019(AirQualityTemplate, Base):
+    __tablename__ = 'los_angeles_1000m_grid_purple_air_pm25_2019'
+
 # --------------------------------------------------------------------------------------------------------------- #
 
 
